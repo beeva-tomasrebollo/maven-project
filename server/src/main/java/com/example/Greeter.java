@@ -12,9 +12,11 @@ public class Greeter {
 
   }
 
-/**
- * Method.
- */
+  /**
+   * Desciption.
+   * @param someone   Someone parameter.
+   * @return          Returns a message.
+   */
   public final String greet(final String someone) {
     return String.format("Welcome %s!", someone);
   }
