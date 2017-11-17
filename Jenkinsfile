@@ -17,12 +17,17 @@ pipeline {
         }
       }
     }
+    stage('Static Analysis') {
+      steps {
+        build job: 'backend-code-analysis'
+      }
+    }
     stage('Deploy to Dev') {
       steps {
         build job: 'backend-deploy-to-dev'
       }
     }
-    stage ('Deploy to Production') {
+    stage ('Deploy to Pro') {
       steps{
         timeout(time:10, unit:'MINUTES') {
           input message:'Approve PRODUCTION Deployment?'
