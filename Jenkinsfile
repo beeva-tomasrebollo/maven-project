@@ -5,14 +5,6 @@ pipeline {
     jdk 'JDK 1.8'
   }
   stages {
-    stage ('Initialize') {
-      steps {
-        sh '''
-          echo "PATH = ${PATH}"
-          echo "M2_HOME = ${M2_HOME}"
-        '''
-      }
-    }
     stage('Build') {
       steps {
         echo "Building..."
@@ -25,9 +17,25 @@ pipeline {
         }
       }
     }
-    stage('Deploy') {
+    stage('Deploy to Dev') {
       steps {
-        echo "Code deployed."
+        build job: 'backend-deploy-to-dev'
+      }
+    }
+    stage ('Deploy to Production') {
+      steps{
+        timeout(time:10, unit:'MINUTES') {
+          input message:'Approve PRODUCTION Deployment?'
+        }
+        build job: 'backend-deploy-to-pro'
+      }
+      post {
+        success {
+          echo 'Code deployed to Production.'
+        }
+        failure {
+          echo ' Deployment failed.'
+        }
       }
     }
   }
