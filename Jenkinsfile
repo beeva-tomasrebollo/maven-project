@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  
+
   tools {
     maven 'Maven 3.5.2'
     jdk 'JDK 1.8'
@@ -11,23 +11,24 @@ pipeline {
   }
 
   stages {
-    parallel('Build') {
-      stage('Package') {
-        steps {
-          echo "Building..."
-          sh 'mvn clean package'
-        }
-        post {
-          success {
-            echo "Now archiving..."
-            archiveArtifacts artifacts: '**/target/*.war'
+    stage('Build') {
+      parallel {
+        stage('Package') {
+          steps {
+            echo "Building..."
+            sh 'mvn clean package'
+          }
+          post {
+            success {
+              echo "Now archiving..."
+              archiveArtifacts artifacts: '**/target/*.war'
+            }
           }
         }
-      }
-
-      stage('Static Analysis') {
-        steps {
-          build job: 'backend-code-analysis'
+        stage('Static Analysis') {
+          steps {
+            build job: 'backend-code-analysis'
+          }
         }
       }
     }
