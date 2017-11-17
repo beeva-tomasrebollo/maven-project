@@ -9,7 +9,13 @@ pipeline {
     stage('Build') {
       steps {
         echo "Building..."
-        mvn clean package
+        withMaven(
+          maven: 'M3',
+          mavenSettingsConfig: 'my-maven-settings',
+          mavenLocalRepo: '.repository')
+        {
+          sh 'mvn clean package'
+        }
       }
       post {
         success {
