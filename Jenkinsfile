@@ -1,9 +1,15 @@
 pipeline {
   agent any
+  
   tools {
     maven 'Maven 3.5.2'
     jdk 'JDK 1.8'
   }
+
+  triggers {
+    pollSCM('* * * * *')
+  }
+
   stages {
     parallel('Build') {
       stage('Package') {
@@ -18,17 +24,20 @@ pipeline {
           }
         }
       }
+
       stage('Static Analysis') {
         steps {
           build job: 'backend-code-analysis'
         }
       }
     }
+
     stage('Deploy to Dev') {
       steps {
         build job: 'backend-deploy-to-dev'
       }
     }
+
     stage ('Deploy to Pro') {
       steps{
         timeout(time:10, unit:'MINUTES') {
