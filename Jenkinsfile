@@ -5,21 +5,23 @@ pipeline {
     jdk 'JDK 1.8'
   }
   stages {
-    stage('Build') {
-      steps {
-        echo "Building..."
-        sh 'mvn clean package'
-      }
-      post {
-        success {
-          echo "Now archiving..."
-          archiveArtifacts artifacts: '**/target/*.war'
+    parallel('Build') {
+      stage('Package') {
+        steps {
+          echo "Building..."
+          sh 'mvn clean package'
+        }
+        post {
+          success {
+            echo "Now archiving..."
+            archiveArtifacts artifacts: '**/target/*.war'
+          }
         }
       }
-    }
-    stage('Static Analysis') {
-      steps {
-        build job: 'backend-code-analysis'
+      stage('Static Analysis') {
+        steps {
+          build job: 'backend-code-analysis'
+        }
       }
     }
     stage('Deploy to Dev') {
