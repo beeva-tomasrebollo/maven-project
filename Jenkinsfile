@@ -1,5 +1,9 @@
 pipeline {
   agent any
+  tools {
+    maven 'Maven 3.5.2'
+    jdk 'JDK 1.8'
+  }
   stages {
     stage('Init') {
       steps {
@@ -20,7 +24,7 @@ pipeline {
       post {
         success {
           echo "Now archiving..."
-          archiveArtifacts artifacts: '**/*.war'
+          archiveArtifacts artifacts: '**/target/*.war'
         }
       }
     }
